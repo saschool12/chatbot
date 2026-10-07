@@ -21,6 +21,7 @@
     settings: {
       soundEnabled: true,
       typewriterEnabled: true,
+      geminiApiKey: '',
       apiBaseUrl: defaultBaseUrl
     },
     sessions: []
@@ -55,6 +56,7 @@
     saveSettingsBtn: document.getElementById('saveSettingsBtn'),
     soundToggle: document.getElementById('soundToggle'),
     typewriterToggle: document.getElementById('typewriterToggle'),
+    geminiApiKeyInput: document.getElementById('geminiApiKeyInput'),
     apiUrlInput: document.getElementById('apiUrlInput'),
     resetAllDataBtn: document.getElementById('resetAllDataBtn'),
 
@@ -508,7 +510,8 @@
       const payload = {
         message: rawText,
         conversationId: state.currentConversationId,
-        personality: state.persona
+        personality: state.persona,
+        apiKey: state.settings.geminiApiKey
       };
 
       const response = await fetch(apiUrl, {
@@ -598,6 +601,7 @@
   function openSettings() {
     elements.soundToggle.checked = state.settings.soundEnabled;
     elements.typewriterToggle.checked = state.settings.typewriterEnabled;
+    if (elements.geminiApiKeyInput) elements.geminiApiKeyInput.value = state.settings.geminiApiKey || '';
     elements.apiUrlInput.value = state.settings.apiBaseUrl;
     elements.settingsModal.classList.remove('hidden');
   }
@@ -609,6 +613,7 @@
   function saveSettingsFromModal() {
     state.settings.soundEnabled = elements.soundToggle.checked;
     state.settings.typewriterEnabled = elements.typewriterToggle.checked;
+    if (elements.geminiApiKeyInput) state.settings.geminiApiKey = elements.geminiApiKeyInput.value.trim();
     let url = elements.apiUrlInput.value.trim();
     if (url.endsWith('/')) url = url.slice(0, -1);
     state.settings.apiBaseUrl = url || defaultBaseUrl;
@@ -682,6 +687,7 @@
         state.settings = {
           soundEnabled: true,
           typewriterEnabled: true,
+          geminiApiKey: '',
           apiBaseUrl: defaultBaseUrl
         };
         closeSettings();

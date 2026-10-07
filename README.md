@@ -28,15 +28,14 @@ A complete, modern, responsive full-stack chatbot web application built with a *
   - **Sound Effects**: Audio chimes on sending and receiving messages synthesized via Web Audio API.
   - **Clear Chat**: Clear active chat with a single click.
 
-### ⚡ Robust Java Spring Boot Backend
+### ⚡ Robust Java Spring Boot Backend + Google Gemini AI
+- **Powered by Google Gemini 3.5 AI**:
+  - Connected to Google Gemini 3.5 Flash via REST integration in Spring Boot (`ChatService.java`) and Vercel Serverless (`api/chat.js`).
+  - Capable of answering any complex question, writing code, reasoning, explaining science, math, literature, and general knowledge.
+  - Custom system instructions tailored to selected Persona (*Default*, *Friendly*, *Senior Java Coder*, *Concise*).
+  - API Key can be configured in UI **Settings (⚙️)**, via `GEMINI_API_KEY` environment variable, or in `application.properties`.
+- **Intelligent Fallback Engine**: If no API key is provided or during network outages, seamlessly falls back to the smart rule engine so the application never fails!
 - **RESTful API**: Clean endpoint architecture at `/api/chat`.
-- **Intelligent Rule-Based Engine**: Works 100% out of the box with zero external AI API keys or tokens required.
-  - **Java & Spring Boot Q&A**: Explains OOP pillars, Java collections (`List` vs `Set`), exception handling, multithreading, and REST APIs with formatted code blocks.
-  - **Web Tech**: HTML, CSS, JavaScript, and client-server architectures.
-  - **Math Calculation Solver**: Evaluates arithmetic expressions (e.g., `45 * 12`, `100 / 4`, `sqrt(144)`).
-  - **Real-Time Clock & Date**: Live server time and calendar dates.
-  - **Humor & Motivation**: Curated developer jokes, trivia facts, and quotes.
-  - **Persona Modes**: Adaptable responses for *Default*, *Friendly*, *Senior Java Coder*, and *Concise*.
 - **Session History Support**: In-memory session tracking with `/api/chat/history` and `/api/chat/clear`.
 - **CORS Configured**: Allows cross-origin requests from any client origin or `file://` protocol.
 - **Embedded Web Server**: Spring Boot automatically serves the frontend at `http://localhost:8080/`.

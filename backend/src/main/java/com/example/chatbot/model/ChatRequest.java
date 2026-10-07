@@ -4,6 +4,7 @@ public class ChatRequest {
     private String message;
     private String conversationId;
     private String personality;
+    private String apiKey;
 
     public ChatRequest() {
     }
@@ -38,12 +39,11 @@ public class ChatRequest {
         this.personality = personality;
     }
 
-    @Override
-    public String toString() {
-        return "ChatRequest{" +
-                "message='" + message + '\'' +
-                ", conversationId='" + conversationId + '\'' +
-                ", personality='" + personality + '\'' +
-                '}';
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
     }
 }
