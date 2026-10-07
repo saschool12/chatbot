@@ -511,7 +511,6 @@
         message: rawText,
         conversationId: state.currentConversationId,
         personality: state.persona,
-        apiKey: state.settings.geminiApiKey
       };
 
       const response = await fetch(apiUrl, {
