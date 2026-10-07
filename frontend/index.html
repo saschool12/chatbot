@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NovaChat • Java Spring Boot AI Chatbot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+  <div class="app-container">
+    <!-- Backdrop for mobile drawer -->
+    <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand">
+          <div class="brand-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+              <line x1="12" y1="19" x2="12" y2="22"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <h2>NovaChat</h2>
+            <span class="badge-java">Java 17 + Spring Boot</span>
+          </div>
+        </div>
+
+        <button id="newChatBtn" class="btn-new-chat" title="Start a fresh conversation (Ctrl+N)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span>New Chat</span>
+          <kbd class="shortcut-badge">Ctrl+N</kbd>
+        </button>
+      </div>
+
+      <!-- Chat History Section -->
+      <div class="sidebar-section-title">
+        <span>Recent Chats</span>
+      </div>
+      <div id="chatHistoryList" class="chat-history-list">
+        <!-- Rendered dynamically via JavaScript -->
+      </div>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <div class="status-indicator-card">
+          <div class="status-dot-pulse"></div>
+          <div class="status-info">
+            <span class="status-label" id="backendStatusText">Backend Online</span>
+            <span class="status-sub">http://localhost:8080</span>
+          </div>
+        </div>
+
+        <div class="sidebar-actions">
+          <button id="clearAllHistoryBtn" class="btn-sidebar-action" title="Clear all chat history">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            <span>Clear History</span>
+          </button>
+          <button id="openSettingsBtn" class="btn-sidebar-action" title="Open Settings">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+            <span>Settings</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-chat">
+      <!-- Top Navigation Bar -->
+      <header class="chat-header">
+        <div class="header-left">
+          <button id="toggleSidebarBtn" class="btn-icon" aria-label="Toggle Sidebar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <div class="current-model-info">
+            <span class="model-title">NovaChat v1.0</span>
+            <span class="model-desc">Spring Boot Rule Engine</span>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <!-- Persona Selector -->
+          <div class="persona-selector-wrapper">
+            <label for="personaSelect">Persona:</label>
+            <select id="personaSelect" class="persona-select">
+              <option value="default">Default Assistant</option>
+              <option value="friendly">Friendly & Cheerful</option>
+              <option value="coder">Senior Java Coder</option>
+              <option value="concise">Concise & Direct</option>
+            </select>
+          </div>
+
+          <!-- Clear Current Chat Button -->
+          <button id="clearChatBtn" class="btn-header-action" title="Clear current chat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 6h18"></path>
+              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+            </svg>
+            <span>Clear Chat</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Message Container -->
+      <section id="messagesContainer" class="messages-container">
+        <!-- Hero / Empty State Screen -->
+        <div id="welcomeHero" class="welcome-hero">
+          <div class="hero-icon-container">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="m4.93 4.93 4.24 4.24"></path>
+              <path d="m14.83 9.17 4.24-4.24"></path>
+              <path d="m14.83 14.83 4.24 4.24"></path>
+              <path d="m9.17 14.83-4.24 4.24"></path>
+              <circle cx="12" cy="12" r="4"></circle>
+            </svg>
+          </div>
+          <h1 class="hero-title">How can I help you today?</h1>
+          <p class="hero-subtitle">Ask anything about Java, Spring Boot, REST APIs, or quick math calculations.</p>
+
+          <div class="prompt-suggestions-grid">
+            <div class="suggestion-card" data-prompt="Explain Java OOP concepts with examples">
+              <div class="card-icon">🧱</div>
+              <div class="card-text">
+                <strong>Explain OOP Concepts</strong>
+                <span>Encapsulation, Inheritance, Polymorphism, Abstraction</span>
+              </div>
+            </div>
+
+            <div class="suggestion-card" data-prompt="How to build a REST API in Spring Boot?">
+              <div class="card-icon">🍃</div>
+              <div class="card-text">
+                <strong>Spring Boot REST API</strong>
+                <span>Controller example with GET & POST endpoints</span>
+              </div>
+            </div>
+
+            <div class="suggestion-card" data-prompt="Show me Java Hello World program">
+              <div class="card-icon">☕</div>
+              <div class="card-text">
+                <strong>Java Hello World</strong>
+                <span>Standard code structure and compilation steps</span>
+              </div>
+            </div>
+
+            <div class="suggestion-card" data-prompt="Tell me a programming joke">
+              <div class="card-icon">😄</div>
+              <div class="card-text">
+                <strong>Programming Humor</strong>
+                <span>Have a laugh with developer and SQL jokes</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Message Stream -->
+        <div id="chatMessagesStream" class="chat-messages-stream"></div>
+
+        <!-- Typing / Loading Animation Indicator -->
+        <div id="typingIndicator" class="typing-indicator-row hidden">
+          <div class="avatar bot-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="10" rx="2"></rect>
+              <circle cx="12" cy="5" r="2"></circle>
+              <path d="M12 7v4"></path>
+              <line x1="8" y1="16" x2="8" y2="16"></line>
+              <line x1="16" y1="16" x2="16" y2="16"></line>
+            </svg>
+          </div>
+          <div class="typing-bubble">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <span class="typing-label">NovaChat is thinking...</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Input Area -->
+      <footer class="chat-input-area">
+        <form id="chatForm" class="chat-form">
+          <div class="input-box-wrapper">
+            <textarea
+              id="messageInput"
+              class="chat-textarea"
+              placeholder="Message NovaChat... (Press Enter to send, Shift+Enter for new line)"
+              rows="1"
+              autocomplete="off"
+            ></textarea>
+            
+            <button id="sendBtn" type="submit" class="btn-send" title="Send message" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </button>
+          </div>
+          <div class="input-footer-hint">
+            <span>Powered by Java Spring Boot Backend • Responsive ChatGPT-style UI</span>
+          </div>
+        </form>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Settings</h3>
+        <button id="closeSettingsBtn" class="btn-close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="setting-item">
+          <div class="setting-info">
+            <span class="setting-title">Sound Effects</span>
+            <span class="setting-desc">Play gentle audio chimes on message send and receive</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="soundToggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <span class="setting-title">Typewriter Animation</span>
+            <span class="setting-desc">Stream bot replies with animated typewriter effect</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="typewriterToggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <span class="setting-title">Backend API Base URL</span>
+            <span class="setting-desc">Server address for chat endpoint</span>
+          </div>
+          <input type="text" id="apiUrlInput" class="setting-input" value="http://localhost:8080">
+        </div>
+
+        <div class="setting-item danger-zone">
+          <div class="setting-info">
+            <span class="setting-title">Reset Everything</span>
+            <span class="setting-desc">Delete all chats from local storage</span>
+          </div>
+          <button id="resetAllDataBtn" class="btn-danger">Clear All Data</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="saveSettingsBtn" class="btn-primary">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
