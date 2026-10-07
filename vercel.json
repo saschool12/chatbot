@@ -1,0 +1,21 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/api/chat",
+      "destination": "/api/chat.js"
+    },
+    {
+      "source": "/api/chat/health",
+      "destination": "/api/chat.js"
+    },
+    {
+      "source": "/api/chat/clear",
+      "destination": "/api/chat.js"
+    },
+    {
+      "source": "/api/chat/history",
+      "destination": "/api/chat.js"
+    }
+  ]
+}
